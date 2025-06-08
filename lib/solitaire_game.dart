@@ -50,16 +50,16 @@ class SolitaireGame extends FlameGame {
     camera.viewfinder.position = Vector2(cardWidth * 3.5 + cardGap * 4, 0);
     camera.viewfinder.anchor = Anchor.topCenter;
   }
+}
 
   Sprite solitaireSprite(
-      {required double x,
+    {required double x,
       required double y,
       required double width,
       required double height}) {
-    return Sprite(
-      Flame.images.fromCache('sprites.png'),
-      srcPosition: Vector2(x, y),
-      srcSize: Vector2(width, height),
-    );
-  }
+  return Sprite(
+    Flame.images.fromCache('sprites.png'),
+    srcPosition: Vector2(x, y),
+    srcSize: Vector2(width, height),
+  );
 }
