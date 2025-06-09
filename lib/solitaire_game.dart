@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:solitaire/components/foundation.dart';
-import 'package:solitaire/components/stock.dart';
-import 'package:solitaire/components/waste.dart';
+import 'package:solitaire/components/foundation_pile.dart';
+import 'package:solitaire/components/stock_pile.dart';
+import 'package:solitaire/components/waste_pile.dart';
 
 import 'components/card.dart';
-import 'components/pile.dart';
+import 'components/tableau_pile.dart';
 
 class SolitaireGame extends FlameGame {
   static const double cardGap = 175.0;
@@ -21,23 +21,23 @@ class SolitaireGame extends FlameGame {
   Future<void> onLoad() async {
     await Flame.images.load('sprites.png');
 
-    final stock = Stock()
+    final stock = StockPile()
       ..size = cardSize
       ..position = Vector2(cardGap, cardGap);
 
-    final waste = Waste()
+    final waste = WastePile()
       ..size = cardSize
       ..position = Vector2(cardWidth + 2 * cardGap, cardGap);
 
     final foundation = List.generate(
         4,
-        (i) => Foundation()
+        (i) => FoundationPile()
           ..size = cardSize
           ..position = Vector2((i + 3) * (cardWidth + cardGap), cardGap));
 
     final piles = List.generate(
         7,
-        (i) => Pile()
+        (i) => TableauPile()
           ..size = cardSize
           ..position = Vector2(
               cardGap + i * (cardWidth + cardGap),
@@ -54,16 +54,6 @@ class SolitaireGame extends FlameGame {
     camera.viewfinder.anchor = Anchor.topCenter;
 
     final random = Random();
-    for (var i = 0; i < 7; i++) {
-      for (var j = 0; j < 4; j++) {
-        final card = Card(intRank: random.nextInt(13) + 1, intSuit: random.nextInt(4))
-          ..position = Vector2(100 + i * 1150, 100 + j * 1500)
-          ..addToParent(world);
-        if (random.nextDouble() < 0.9) { // flip face up with 90% probability
-          card.flip();
-        }
-      }
-    }
   }
 }
 

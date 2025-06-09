@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 
-class Waste extends PositionComponent {
+class WastePile extends PositionComponent {
 
   @override
   bool get debugMode => true;
