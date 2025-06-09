@@ -36,7 +36,10 @@ class SolitaireGame extends FlameGame {
 
     final foundation = List.generate(
         4,
-        (i) => FoundationPile()
+        (i) => FoundationPile(
+          i,
+          position: Vector2((i + 3) * (cardWidth + cardGap) + cardGap, cardGap),
+        )
           ..size = cardSize
           ..position = Vector2((i + 3) * (cardWidth + cardGap), cardGap));
 
@@ -66,7 +69,18 @@ class SolitaireGame extends FlameGame {
 
     cards.shuffle();
     world.addAll(cards);
-    cards.forEach(stock.acquireCard);
+
+    int cardToDeal = cards.length - 1;
+    for(var i = 0; i <7; i++){
+      for(var j = i; j < 7; j++){
+        piles[j].acquireCard(cards[cardToDeal--]);
+      }
+      piles[i].flipTopCard();
+    }
+
+    for(int n = 0; n<= cardToDeal; n++){
+      stock.acquireCard(cards[n]);
+    }
   }
 }
 
