@@ -6,8 +6,7 @@ import 'card.dart';
 
 class WastePile extends PositionComponent implements Pile {
 
-  @override
-  bool get debugMode => true;
+  WastePile({super.position}) : super(size: SolitaireGame.cardSize);
 
   final List<Card> _cards = [];
   final Vector2 _fanOffset = Vector2(SolitaireGame.cardWidth * 0.2, 0);
@@ -31,9 +30,9 @@ class WastePile extends PositionComponent implements Pile {
 
     if(n == 2){
       _cards[1].position.add(_fanOffset);
-    }else{
+    }else if(n>=3){
       _cards[n - 2].position.add(_fanOffset);
-      _cards[n - 2].position.addScaled(_fanOffset, 2);
+      _cards[n - 1].position.addScaled(_fanOffset, 2);
     }
   }
 
@@ -57,6 +56,8 @@ class WastePile extends PositionComponent implements Pile {
 
   @override
   void removeCard(Card card) {
-    _cards.remove(card);
+    assert(canMoveCard(card));
+    _cards.removeLast();
+    _fanOutTopCards();
   }
 }

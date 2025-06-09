@@ -21,7 +21,7 @@ class Suit {
   }
 
   Suit._(this.value, this.label, double x, double y, double w, double h)
-      : sprite = solitaireSprite(x: x, y: y, width: w, height: h);
+      : sprite = solitaireSprite( x, y,  w,  h);
 
   bool get isRed => value <= 1;
   bool get isBlack => value <= 2;

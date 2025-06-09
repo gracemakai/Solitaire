@@ -14,9 +14,6 @@ class FoundationPile extends PositionComponent implements Pile {
       : suit = Suit.fromInt(intSuit),
         super(size: SolitaireGame.cardSize);
 
-  @override
-  bool get debugMode => true;
-
   final List<Card> _cards = [];
   final _borderPaint = Paint()
     ..style = PaintingStyle.stroke
@@ -52,7 +49,8 @@ class FoundationPile extends PositionComponent implements Pile {
   @override
   bool canAcceptCard(Card card) {
     final topCardRank = _cards.isEmpty ? 0 : _cards.last.rank.value;
-    return card.suit == suit && card.rank.value == topCardRank + 1;
+    return card.suit == suit && card.rank.value == topCardRank + 1 &&
+    card.attachedCards.isEmpty;
   }
 
   @override
@@ -63,6 +61,7 @@ class FoundationPile extends PositionComponent implements Pile {
 
   @override
   void removeCard(Card card) {
-    _cards.remove(card);
+    assert(canMoveCard(card));
+    _cards.removeLast();
   }
 }

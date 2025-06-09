@@ -9,8 +9,8 @@ import 'package:solitaire/solitaire_game.dart';
 import 'card.dart';
 
 class StockPile extends PositionComponent with TapCallbacks implements Pile {
-  @override
-  bool get debugMode => true;
+
+  StockPile({super.position}) : super(size: SolitaireGame.cardSize);
 
   final _borderPaint = Paint()
     ..style = PaintingStyle.stroke

@@ -6,8 +6,8 @@ import 'package:solitaire/components/pile.dart';
 import 'package:solitaire/solitaire_game.dart';
 
 class TableauPile extends PositionComponent implements Pile {
-  @override
-  bool get debugMode => true;
+
+  TableauPile({super.position}) : super(size: SolitaireGame.cardSize);
 
   final _borderPaint = Paint()
     ..style = PaintingStyle.stroke
@@ -48,13 +48,20 @@ class TableauPile extends PositionComponent implements Pile {
     height = SolitaireGame.cardHeight * 1.5 + _cards.last.y - _cards.first.y;
   }
 
+  List<Card> cardsOnTop(Card card){
+    assert(card.isFaceUp && _cards.contains(card));
+
+    final index = _cards.indexOf(card);
+    return _cards.getRange(index + 1, _cards.length).toList();
+  }
+
   @override
   void render(Canvas canvas) {
     canvas.drawRRect(SolitaireGame.cardRRect, _borderPaint);
   }
 
   @override
-  bool canMoveCard(Card card) => _cards.isNotEmpty && card == _cards.last;
+  bool canMoveCard(Card card) => card.isFaceUp;
 
   @override
   bool canAcceptCard(Card card) {
@@ -78,7 +85,12 @@ class TableauPile extends PositionComponent implements Pile {
 
   @override
   void removeCard(Card card) {
-    _cards.remove(card);
+    assert(_cards.contains(card) && card.isFaceUp);
+    final index = _cards.indexOf(card);
+    _cards.removeRange(index, _cards.length);
+    if (_cards.isNotEmpty && _cards.last.isFaceDown) {
+      flipTopCard();
+    }
     layoutCards();
   }
 }

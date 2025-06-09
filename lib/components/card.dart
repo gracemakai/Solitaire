@@ -3,7 +3,9 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flutter/material.dart';
 import 'package:solitaire/components/pile.dart';
+import 'package:solitaire/components/tableau_pile.dart';
 import 'package:solitaire/rank.dart';
 import 'package:solitaire/solitaire_game.dart';
 import 'package:solitaire/suit.dart';
@@ -13,6 +15,7 @@ class Card extends PositionComponent with DragCallbacks {
   final Suit suit;
   bool _faceUp;
   Pile? pile;
+  final List<Card> attachedCards = [];
 
   Card({required int intRank, required int intSuit})
       : rank = Rank.fromInt(intRank),
@@ -52,7 +55,7 @@ class Card extends PositionComponent with DragCallbacks {
   );
   static final RRect backRRectInner = cardRRect.deflate(40);
   static final Sprite flameSprite =
-      solitaireSprite(x: 1367, y: 6, width: 357, height: 501);
+      solitaireSprite( 1367,  6, 357,  501);
 
   static final Paint frontBackgroundPaint = Paint()
     ..color = const Color(0xff000000);
@@ -65,27 +68,21 @@ class Card extends PositionComponent with DragCallbacks {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 10;
 
-  static final Sprite redJack =
-      solitaireSprite(x: 81, y: 565, width: 562, height: 488);
-  static final Sprite redQueen =
-      solitaireSprite(x: 717, y: 541, width: 486, height: 515);
-  static final Sprite redKing =
-      solitaireSprite(x: 1305, y: 532, width: 407, height: 549);
-
   static final blueFilter = Paint()
     ..colorFilter = const ColorFilter.mode(
       Color(0x880d8bff),
       BlendMode.srcATop,
     );
-  static final Sprite blackJack =
-      solitaireSprite(x: 81, y: 565, width: 562, height: 488)
-        ..paint = blueFilter;
-  static final Sprite blackQueen =
-      solitaireSprite(x: 717, y: 541, width: 486, height: 515)
-        ..paint = blueFilter;
-  static final Sprite blackKing =
-      solitaireSprite(x: 1305, y: 532, width: 407, height: 549)
-        ..paint = blueFilter;
+
+  static final Sprite redJack = solitaireSprite(81, 565, 562, 488);
+  static final Sprite redQueen = solitaireSprite(717, 541, 486, 515);
+  static final Sprite redKing = solitaireSprite(1305, 532, 407, 549);
+  static final Sprite blackJack = solitaireSprite(81, 565, 562, 488)
+    ..paint = blueFilter;
+  static final Sprite blackQueen = solitaireSprite(717, 541, 486, 515)
+    ..paint = blueFilter;
+  static final Sprite blackKing = solitaireSprite(1305, 532, 407, 549)
+    ..paint = blueFilter;
 
   void _renderFront(Canvas canvas) {
     canvas.drawRRect(cardRRect, frontBackgroundPaint);
@@ -394,19 +391,16 @@ class Card extends PositionComponent with DragCallbacks {
   }) {
     if (rotate) {
       canvas.save();
-      canvas.translate(
-        size.x / 2,
-        size.y / 2,
-      );
+      canvas.translate(size.x / 2, size.y / 2);
       canvas.rotate(pi);
       canvas.translate(-size.x / 2, -size.y / 2);
     }
-
-    sprite.render(canvas,
-        position: Vector2(relativeX * size.x, relativeY * size.y),
-        anchor: Anchor.center,
-        size: sprite.srcSize.scaled(scale));
-
+    sprite.render(
+      canvas,
+      position: Vector2(relativeX * size.x, relativeY * size.y),
+      anchor: Anchor.center,
+      size: sprite.srcSize.scaled(scale),
+    );
     if (rotate) {
       canvas.restore();
     }
@@ -417,6 +411,15 @@ class Card extends PositionComponent with DragCallbacks {
     if (pile?.canMoveCard(this) ?? false) {
       super.onDragStart(event);
       priority = 100;
+      if(pile is TableauPile){
+        attachedCards.clear();
+        final extraCards = (pile! as TableauPile).cardsOnTop(this);
+
+        for(final card in extraCards){
+          card.priority = attachedCards.length + 101;
+          attachedCards.add(card);
+        }
+      }
     }
   }
 
@@ -425,7 +428,11 @@ class Card extends PositionComponent with DragCallbacks {
     if (!isDragged) {
       return;
     }
-    position += event.localDelta;
+    final delta = event.localDelta;
+    position.add(delta);
+    for (var card in attachedCards) {
+      card.position.add(delta);
+    }
   }
 
   @override
@@ -446,9 +453,22 @@ class Card extends PositionComponent with DragCallbacks {
       if(dropPiles.first.canAcceptCard(this)){
         pile!.removeCard(this);
         dropPiles.first.acquireCard(this);
+
+        if(attachedCards.isNotEmpty){
+          for (var card in attachedCards) {
+            dropPiles.first.acquireCard(card);
+          }
+          attachedCards.clear();
+        }
         return;
       }
     }
     pile!.returnCard(this);
+    if(attachedCards.isNotEmpty){
+      for (var card in attachedCards) {
+        pile!.returnCard(card);
+      }
+      attachedCards.clear();
+    }
   }
 }

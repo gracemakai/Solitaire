@@ -26,34 +26,29 @@ class SolitaireGame extends FlameGame {
   Future<void> onLoad() async {
     await Flame.images.load('sprites.png');
 
-    final stock = StockPile()
-      ..size = cardSize
-      ..position = Vector2(cardGap, cardGap);
-
-    final waste = WastePile()
-      ..size = cardSize
-      ..position = Vector2(cardWidth + 2 * cardGap, cardGap);
-
-    final foundation = List.generate(
-        4,
-        (i) => FoundationPile(
-          i,
-          position: Vector2((i + 3) * (cardWidth + cardGap) + cardGap, cardGap),
-        )
-          ..size = cardSize
-          ..position = Vector2((i + 3) * (cardWidth + cardGap), cardGap));
-
+    final stock = StockPile(position: Vector2(cardGap, cardGap));
+    final waste =
+        WastePile(position: Vector2(cardWidth + 2 * cardGap, cardGap));
+    final foundations = List.generate(
+      4,
+      (i) => FoundationPile(
+        i,
+        position: Vector2((i + 3) * (cardWidth + cardGap) + cardGap, cardGap),
+      ),
+    );
     final piles = List.generate(
-        7,
-        (i) => TableauPile()
-          ..size = cardSize
-          ..position = Vector2(
-              cardGap + i * (cardWidth + cardGap),
-              cardHeight + 2 * cardGap));
+      7,
+      (i) => TableauPile(
+        position: Vector2(
+          cardGap + i * (cardWidth + cardGap),
+          cardHeight + 2 * cardGap,
+        ),
+      ),
+    );
 
     world.add(stock);
     world.add(waste);
-    world.addAll(foundation);
+    world.addAll(foundations);
     world.addAll(piles);
 
     camera.viewfinder.visibleGameSize =
@@ -62,33 +57,26 @@ class SolitaireGame extends FlameGame {
     camera.viewfinder.anchor = Anchor.topCenter;
 
     final cards = [
-      for(var rank = 1; rank <=13; rank++)
-        for(var suit = 0; suit < 4; suit++)
-          Card(intRank: rank, intSuit: suit)
+      for (var rank = 1; rank <= 13; rank++)
+        for (var suit = 0; suit < 4; suit++) Card(intRank: rank, intSuit: suit),
     ];
-
     cards.shuffle();
     world.addAll(cards);
 
-    int cardToDeal = cards.length - 1;
-    for(var i = 0; i <7; i++){
-      for(var j = i; j < 7; j++){
+    var cardToDeal = cards.length - 1;
+    for (var i = 0; i < 7; i++) {
+      for (var j = i; j < 7; j++) {
         piles[j].acquireCard(cards[cardToDeal--]);
       }
       piles[i].flipTopCard();
     }
-
-    for(int n = 0; n<= cardToDeal; n++){
+    for (var n = 0; n <= cardToDeal; n++) {
       stock.acquireCard(cards[n]);
     }
   }
 }
 
-  Sprite solitaireSprite(
-    {required double x,
-      required double y,
-      required double width,
-      required double height}) {
+Sprite solitaireSprite(double x, double y, double width, double height) {
   return Sprite(
     Flame.images.fromCache('sprites.png'),
     srcPosition: Vector2(x, y),

@@ -18,8 +18,8 @@ class Rank {
     double y2,
     double w,
     double h,
-  )   : redSprite = solitaireSprite(x: x1, y: y1, width: w, height: h),
-        blackSprite = solitaireSprite(x: x2, y: y2, width: w, height: h);
+  )   : redSprite = solitaireSprite( x1, y1,  w,  h),
+        blackSprite = solitaireSprite( x2,  y2,  w,  h);
 
   final int value;
   final String label;
