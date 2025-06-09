@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -16,6 +17,10 @@ class SolitaireGame extends FlameGame {
   static const double cardHeight = 1400.0;
   static const double cardRadius = 100.0;
   static final Vector2 cardSize = Vector2(cardWidth, cardHeight);
+  static final cardRRect = RRect.fromRectAndRadius(
+    const Rect.fromLTWH(0, 0, cardWidth, cardHeight),
+    const Radius.circular(cardRadius),
+  );
 
   @override
   Future<void> onLoad() async {
@@ -53,7 +58,15 @@ class SolitaireGame extends FlameGame {
     camera.viewfinder.position = Vector2(cardWidth * 3.5 + cardGap * 4, 0);
     camera.viewfinder.anchor = Anchor.topCenter;
 
-    final random = Random();
+    final cards = [
+      for(var rank = 1; rank <=13; rank++)
+        for(var suit = 0; suit < 4; suit++)
+          Card(intRank: rank, intSuit: suit)
+    ];
+
+    cards.shuffle();
+    world.addAll(cards);
+    cards.forEach(stock.acquireCard);
   }
 }
 
