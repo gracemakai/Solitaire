@@ -26,6 +26,7 @@ class Card extends PositionComponent with DragCallbacks {
   bool get isFaceUp => _faceUp;
   bool get isFaceDown => !_faceUp;
   void flip() => _faceUp = !_faceUp;
+  bool _isDragging = false;
 
   @override
   String toString() => rank.label + suit.label;
@@ -410,6 +411,7 @@ class Card extends PositionComponent with DragCallbacks {
   void onDragStart(DragStartEvent event) {
     if (pile?.canMoveCard(this) ?? false) {
       super.onDragStart(event);
+      _isDragging = true;
       priority = 100;
       if(pile is TableauPile){
         attachedCards.clear();
@@ -425,7 +427,7 @@ class Card extends PositionComponent with DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (!isDragged) {
+    if (!_isDragging) {
       return;
     }
     final delta = event.localDelta;
@@ -437,10 +439,10 @@ class Card extends PositionComponent with DragCallbacks {
 
   @override
   void onDragEnd(DragEndEvent event) {
-    if (!isDragged) {
+    if (!_isDragging) {
       return;
     }
-
+    _isDragging = false;
     super.onDragEnd(event);
     final dropPiles = parent!
         .componentsAtPoint(position + size / 2)

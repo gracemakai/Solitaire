@@ -8,7 +8,7 @@ import 'package:solitaire/solitaire_game.dart';
 
 import 'card.dart';
 
-class StockPile extends PositionComponent with TapCallbacks implements Pile {
+class StockPile extends PositionComponent with TapCallbacks, HasGameReference<SolitaireGame> implements Pile {
 
   StockPile({super.position}) : super(size: SolitaireGame.cardSize);
 
@@ -42,7 +42,7 @@ class StockPile extends PositionComponent with TapCallbacks implements Pile {
         acquireCard(card);
       });
     }else {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < game.solitaireDraw; i++) {
         if (_cards.isNotEmpty) {
           final card = _cards.removeLast();
           card.flip();

@@ -4,7 +4,7 @@ import 'package:solitaire/solitaire_game.dart';
 
 import 'card.dart';
 
-class WastePile extends PositionComponent implements Pile {
+class WastePile extends PositionComponent with HasGameReference<SolitaireGame> implements Pile {
 
   WastePile({super.position}) : super(size: SolitaireGame.cardSize);
 
@@ -23,6 +23,11 @@ class WastePile extends PositionComponent implements Pile {
   }
 
   void _fanOutTopCards(){
+
+    if(game.solitaireDraw == 1){
+      return;
+    }
+
     final n = _cards.length;
     for(var i = 0; i < n; i++){
       _cards[i].position = position;

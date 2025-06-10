@@ -21,6 +21,7 @@ class SolitaireGame extends FlameGame {
     const Rect.fromLTWH(0, 0, cardWidth, cardHeight),
     const Radius.circular(cardRadius),
   );
+  final int solitaireDraw = 1;
 
   @override
   Future<void> onLoad() async {
