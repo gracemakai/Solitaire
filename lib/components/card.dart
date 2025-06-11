@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:solitaire/components/pile.dart';
@@ -27,6 +28,7 @@ class Card extends PositionComponent with DragCallbacks {
   bool get isFaceDown => !_faceUp;
   void flip() => _faceUp = !_faceUp;
   bool _isDragging = false;
+  Vector2 _whereCardStarted = Vector2(0, 0);
 
   @override
   String toString() => rank.label + suit.label;
@@ -55,8 +57,7 @@ class Card extends PositionComponent with DragCallbacks {
     const Radius.circular(SolitaireGame.cardRadius),
   );
   static final RRect backRRectInner = cardRRect.deflate(40);
-  static final Sprite flameSprite =
-      solitaireSprite( 1367,  6, 357,  501);
+  static final Sprite flameSprite = solitaireSprite(1367, 6, 357, 501);
 
   static final Paint frontBackgroundPaint = Paint()
     ..color = const Color(0xff000000);
@@ -407,17 +408,40 @@ class Card extends PositionComponent with DragCallbacks {
     }
   }
 
+  void doMove(
+    Vector2 to, {
+    double speed = 10,
+    double start = 0,
+    Curve curve = Curves.easeOutQuad,
+    VoidCallback? onComplete,
+  }) {
+    assert(speed > 0);
+    final dt = (to - position).length / (speed * size.x);
+
+    assert(dt > 0);
+
+    priority = 100;
+
+    add(MoveToEffect(
+        to, EffectController(duration: dt, startDelay: start, curve: curve),
+        onComplete: () {
+      onComplete?.call();
+    }));
+  }
+
   @override
   void onDragStart(DragStartEvent event) {
     if (pile?.canMoveCard(this) ?? false) {
       super.onDragStart(event);
       _isDragging = true;
       priority = 100;
-      if(pile is TableauPile){
+      _whereCardStarted = Vector2(position.x, position.y);
+
+      if (pile is TableauPile) {
         attachedCards.clear();
         final extraCards = (pile! as TableauPile).cardsOnTop(this);
 
-        for(final card in extraCards){
+        for (final card in extraCards) {
           card.priority = attachedCards.length + 101;
           attachedCards.add(card);
         }
@@ -449,14 +473,12 @@ class Card extends PositionComponent with DragCallbacks {
         .whereType<Pile>()
         .toList();
 
-
     if (dropPiles.isNotEmpty) {
-
-      if(dropPiles.first.canAcceptCard(this)){
+      if (dropPiles.first.canAcceptCard(this)) {
         pile!.removeCard(this);
         dropPiles.first.acquireCard(this);
 
-        if(attachedCards.isNotEmpty){
+        if (attachedCards.isNotEmpty) {
           for (var card in attachedCards) {
             dropPiles.first.acquireCard(card);
           }
@@ -465,10 +487,17 @@ class Card extends PositionComponent with DragCallbacks {
         return;
       }
     }
-    pile!.returnCard(this);
-    if(attachedCards.isNotEmpty){
+
+    doMove(_whereCardStarted, onComplete: () {
+      pile!.returnCard(this);
+    });
+
+    if (attachedCards.isNotEmpty) {
       for (var card in attachedCards) {
-        pile!.returnCard(card);
+        final offset = card.position - position;
+        card.doMove(_whereCardStarted + offset, onComplete: () {
+          pile!.returnCard(card);
+        });
       }
       attachedCards.clear();
     }
