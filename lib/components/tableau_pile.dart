@@ -31,7 +31,7 @@ class TableauPile extends PositionComponent implements Pile {
     layoutCards();
   }
 
-  void flipTopCard() {
+  void flipTopCard({double start = 0.1}) {
     assert(_cards.last.isFaceDown);
 
     _cards.last.flip();
