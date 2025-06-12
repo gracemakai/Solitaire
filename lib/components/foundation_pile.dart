@@ -9,12 +9,15 @@ import 'card.dart';
 
 class FoundationPile extends PositionComponent implements Pile {
   final Suit suit;
+  final VoidCallback checkWin;
 
-  FoundationPile(int intSuit, {super.position})
+  FoundationPile(int intSuit, this.checkWin, {super.position})
       : suit = Suit.fromInt(intSuit),
         super(size: SolitaireGame.cardSize);
 
   final List<Card> _cards = [];
+  bool get isFull => _cards.length == 13;
+
   final _borderPaint = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 10
@@ -31,6 +34,9 @@ class FoundationPile extends PositionComponent implements Pile {
     card.position = position;
     card.priority = _cards.length;
     _cards.add(card);
+    if (isFull) {
+      checkWin();
+    }
   }
 
   @override
