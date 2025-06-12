@@ -6,7 +6,6 @@ import 'package:solitaire/components/pile.dart';
 import 'package:solitaire/solitaire_game.dart';
 
 class TableauPile extends PositionComponent implements Pile {
-
   TableauPile({super.position}) : super(size: SolitaireGame.cardSize);
 
   final _borderPaint = Paint()
@@ -32,6 +31,7 @@ class TableauPile extends PositionComponent implements Pile {
   }
 
   void flipTopCard({double start = 0.1}) {
+    print('aa');
     assert(_cards.last.isFaceDown);
 
     _cards.last.turnFaceUp(
@@ -40,18 +40,21 @@ class TableauPile extends PositionComponent implements Pile {
     );
   }
 
-  void layoutCards(){
-    if(_cards.isEmpty){
+  void layoutCards() {
+    if (_cards.isEmpty) {
       return;
     }
     _cards[0].position.setFrom(position);
-    for(var i = 1; i < _cards.length; i++){
-      _cards[i].position..setFrom(_cards[i - 1].position)..add(_cards[i - 1].isFaceDown ? _fanOffset1 : _fanOffset2);
+    for (var i = 1; i < _cards.length; i++) {
+      _cards[i].position
+        ..setFrom(_cards[i - 1].position)
+        ..add(_cards[i - 1].isFaceDown ? _fanOffset1 : _fanOffset2);
     }
-    height = SolitaireGame.cardHeight * 1.5 + (_cards.length < 2 ? 0.0 : _cards.last.y - _cards.first.y);
+    height = SolitaireGame.cardHeight * 1.5 +
+        (_cards.length < 2 ? 0.0 : _cards.last.y - _cards.first.y);
   }
 
-  List<Card> cardsOnTop(Card card){
+  List<Card> cardsOnTop(Card card) {
     assert(card.isFaceUp && _cards.contains(card));
 
     final index = _cards.indexOf(card);
@@ -81,7 +84,8 @@ class TableauPile extends PositionComponent implements Pile {
   @override
   void returnCard(Card card) {
     final index = _cards.indexOf(card);
-    card.position = index == 0 ? position : _cards[index - 1].position + _fanOffset1;
+    card.position =
+        index == 0 ? position : _cards[index - 1].position + _fanOffset1;
     card.priority = index;
     layoutCards();
   }

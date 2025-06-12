@@ -427,15 +427,12 @@ class Card extends PositionComponent with DragCallbacks {
   }) {
     assert(speed > 0);
     final dt = (to - position).length / (speed * size.x);
-
     assert(dt > 0);
-
-    priority = 100;
 
     add(MoveToEffect(
         to, EffectController(duration: dt, startDelay: start, curve: curve),
         onComplete: () {
-       onComplete?.call;
+       onComplete?.call();
     }));
   }
 

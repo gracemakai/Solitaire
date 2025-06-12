@@ -98,14 +98,14 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
 
     var cardToDeal = cards.length - 1;
     var nMovingCards = 0;
-
     for (var i = 0; i < 7; i++) {
       for (var j = i; j < 7; j++) {
         final card = cards[cardToDeal--];
-        card.doMove(tableauPiles[i].position, start: nMovingCards * 0.15,
+        card.doMove(tableauPiles[j].position, speed: 15.0, start: nMovingCards * 0.15,
             onComplete: () {
           tableauPiles[j].acquireCard(card);
           nMovingCards--;
+
           if (nMovingCards == 0) {
             var delayFactor = 0;
 
@@ -127,16 +127,16 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
     final button = AdvancedButtonComponent(
       children: [
         TextComponent(
-          text: label,
-          textRenderer: TextPaint(
-            style: const TextStyle(
-              fontSize: 150,
-              color: Color.fromRGBO(0, 0, 0, 1.0),
+            text: label,
+            textRenderer: TextPaint(
+              style: const TextStyle(
+                fontSize: 150,
+                color: Color.fromRGBO(0, 0, 0, 1.0),
+              ),
             ),
-          ),
-          anchor: Anchor.center,
-          position: Vector2(buttonX / 12, topGap / 3),priority: 1
-        )
+            anchor: Anchor.center,
+            position: Vector2(buttonX / 12, topGap / 3),
+            priority: 1)
       ],
       // label,
       size: Vector2(SolitaireGame.cardWidth, 0.6 * topGap),
