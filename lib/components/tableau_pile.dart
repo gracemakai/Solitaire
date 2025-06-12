@@ -34,7 +34,10 @@ class TableauPile extends PositionComponent implements Pile {
   void flipTopCard({double start = 0.1}) {
     assert(_cards.last.isFaceDown);
 
-    _cards.last.flip();
+    _cards.last.turnFaceUp(
+      start: start,
+      onComplete: layoutCards,
+    );
   }
 
   void layoutCards(){
@@ -45,7 +48,7 @@ class TableauPile extends PositionComponent implements Pile {
     for(var i = 1; i < _cards.length; i++){
       _cards[i].position..setFrom(_cards[i - 1].position)..add(_cards[i - 1].isFaceDown ? _fanOffset1 : _fanOffset2);
     }
-    height = SolitaireGame.cardHeight * 1.5 + _cards.last.y - _cards.first.y;
+    height = SolitaireGame.cardHeight * 1.5 + (_cards.length < 2 ? 0.0 : _cards.last.y - _cards.first.y);
   }
 
   List<Card> cardsOnTop(Card card){
