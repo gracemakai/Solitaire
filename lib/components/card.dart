@@ -69,39 +69,43 @@ class Card extends PositionComponent with DragCallbacks {
   static final RRect backRRectInner = cardRRect.deflate(40);
   static final Sprite flameSprite = solitaireSprite(1367, 6, 357, 501);
 
+  static const Color yellow = Color(0xFFFFFF2B);
+  static const Color blue = Color(0xFF4285F4);
+
   static final Paint frontBackgroundPaint = Paint()
     ..color = const Color(0xff000000);
   static final Paint redBorderPaint = Paint()
-    ..color = const Color(0xffece8a3)
+    ..color = yellow
     ..style = PaintingStyle.stroke
     ..strokeWidth = 10;
   static final Paint blackBorderPaint = Paint()
-    ..color = const Color(0xff7ab2e8)
+    ..color = blue
     ..style = PaintingStyle.stroke
     ..strokeWidth = 10;
 
-  static final blueFilter = Paint()
+  static final Paint yellowPaint = Paint()
     ..colorFilter = const ColorFilter.mode(
-      Color(0x880d8bff),
+      yellow, // Use the same yellow as the numbers
+      BlendMode.srcATop,
+    );
+  static final Paint bluePaint = Paint()
+    ..colorFilter = const ColorFilter.mode(
+      blue, // Use the same blue as the numbers
       BlendMode.srcATop,
     );
 
-  static final Sprite redJack = solitaireSprite(81, 565, 562, 488);
-  static final Sprite redQueen = solitaireSprite(717, 541, 486, 515);
-  static final Sprite redKing = solitaireSprite(1305, 532, 407, 549);
-  static final Sprite blackJack = solitaireSprite(81, 565, 562, 488)
-    ..paint = blueFilter;
-  static final Sprite blackQueen = solitaireSprite(717, 541, 486, 515)
-    ..paint = blueFilter;
-  static final Sprite blackKing = solitaireSprite(1305, 532, 407, 549)
-    ..paint = blueFilter;
+  static final Sprite jack = solitaireSprite(81, 565, 562, 488);
+  static final Sprite queen = solitaireSprite(717, 541, 486, 515);
+  static final Sprite king = solitaireSprite(1305, 532, 407, 549);
 
   void _renderFront(Canvas canvas) {
     canvas.drawRRect(cardRRect, frontBackgroundPaint);
     canvas.drawRRect(cardRRect, suit.isRed ? redBorderPaint : blackBorderPaint);
 
-    final rankSprite = suit.isBlack ? rank.blackSprite : rank.redSprite;
-    final suitSprite = suit.sprite;
+    final Paint rankPaint = suit.isBlack ? bluePaint : yellowPaint;
+    final Sprite rankSprite = (suit.isBlack ? rank.blackSprite : rank.redSprite)
+      ..paint = rankPaint;
+    final suitSprite = suit.sprite..paint = rankPaint;
 
     _drawSprite(
         canvas: canvas, sprite: rankSprite, relativeX: 0.1, relativeY: 0.08);
@@ -368,19 +372,19 @@ class Card extends PositionComponent with DragCallbacks {
       case 11:
         _drawSprite(
             canvas: canvas,
-            sprite: suit.isRed ? redJack : blackJack,
+            sprite: jack,
             relativeX: 0.5,
             relativeY: 0.5);
       case 12:
         _drawSprite(
             canvas: canvas,
-            sprite: suit.isRed ? redQueen : blackQueen,
+            sprite: queen,
             relativeX: 0.5,
             relativeY: 0.5);
       case 13:
         _drawSprite(
             canvas: canvas,
-            sprite: suit.isRed ? redKing : blackKing,
+            sprite: king,
             relativeX: 0.5,
             relativeY: 0.5);
     }
