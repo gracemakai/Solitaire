@@ -125,6 +125,8 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
   }
 
   void addButton(String label, double buttonX, Action action) {
+    final buttonSize = Vector2(SolitaireGame.cardWidth + 10, 0.6 * topGap);
+
     final button = AdvancedButtonComponent(
       children: [
         TextComponent(
@@ -136,12 +138,12 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
               ),
             ),
             anchor: Anchor.center,
-            position: Vector2(buttonX / 12, topGap / 3),
+            position: buttonSize / 2,
             priority: 1)
       ],
       // label,
-      size: Vector2(SolitaireGame.cardWidth, 0.6 * topGap),
-      position: Vector2(buttonX, topGap / 2),
+      size: buttonSize,
+      position: Vector2(buttonX, topGap / 5),
       defaultSkin: RoundedRectComponent()
         ..setColor(const Color.fromRGBO(0, 255, 0, 1)),
       onReleased: () {
