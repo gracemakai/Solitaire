@@ -24,5 +24,5 @@ class Suit {
       : sprite = solitaireSprite( x, y,  w,  h);
 
   bool get isRed => value <= 1;
-  bool get isBlack => value <= 2;
+  bool get isBlack => value >= 2;
 }
