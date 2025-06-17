@@ -97,6 +97,11 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
 
     cards.shuffle(Random(game.seed));
 
+    var dealPriority = 1;
+    for (final card in cards) {
+      card.priority = dealPriority++;
+    }
+
     var cardToDeal = cards.length - 1;
     var nMovingCards = 0;
     for (var i = 0; i < 7; i++) {

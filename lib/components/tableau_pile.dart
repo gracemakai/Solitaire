@@ -44,7 +44,10 @@ class TableauPile extends PositionComponent implements Pile {
       return;
     }
     _cards[0].position.setFrom(position);
+    _cards[0].priority = 0;
+
     for (var i = 1; i < _cards.length; i++) {
+      _cards[i].priority = i;
       _cards[i].position
         ..setFrom(_cards[i - 1].position)
         ..add(_cards[i - 1].isFaceDown ? _fanOffset1 : _fanOffset2);

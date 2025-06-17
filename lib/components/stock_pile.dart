@@ -66,7 +66,7 @@ class StockPile extends PositionComponent with TapCallbacks, HasGameReference<So
   bool canAcceptCard(Card card) => false;
 
   @override
-  void returnCard(Card card) => throw StateError('Cannot remove cards from this pile');
+  void returnCard(Card card) => card.priority = _cards.indexOf(card);
 
   @override
   void removeCard(Card card) => throw StateError('Cannot remove cards from this pile');
