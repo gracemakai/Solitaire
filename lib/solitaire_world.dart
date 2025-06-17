@@ -147,7 +147,7 @@ class SolitaireWorld extends World with HasGameReference<SolitaireGame> {
       onReleased: () {
         if (action == Action.haveFun) {
           // Shortcut to the "win" sequence, for Tutorial purposes only.
-          // letsCelebrate();
+          letsCelebrate();
         } else {
           // Restart with a new deal or the same deal as before.
           game.action = action;
