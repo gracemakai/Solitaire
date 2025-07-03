@@ -13,6 +13,9 @@ A beautiful, smooth Solitaire game built using [Flutter](https://flutter.dev/) a
 - Built using Flame's component system
 - Mobile-optimized layout
 
+🌐 Play Online
+  Netlify URL: [[https://solitairee.netlify.app/](https://solitairee.netlify.app/)]
+
 ## 📸 Screenshots
 <img width="300" alt="Screenshot 2025-06-17 at 12 59 36 PM" src="https://github.com/user-attachments/assets/d07cdfed-5b1f-4fe3-90c3-11547dc81484" />
 <img width="300" alt="Screenshot 2025-06-17 at 12 59 13 PM" src="https://github.com/user-attachments/assets/a807b5bd-281e-4a2a-b2cc-41d9a2e6a0ce" />
